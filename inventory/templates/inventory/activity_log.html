@@ -1,0 +1,94 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="table-card">
+    <div class="table-card-header">
+        <h5>🕐 Activity Log</h5>
+        <span style="color:#64748b;font-size:0.85rem;">
+            {{ page_obj.paginator.count }} total activities
+        </span>
+    </div>
+
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in page_obj %}
+                <tr>
+                    <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                    <td>
+                        <div style="font-weight:500;">
+                            {{ log.user.get_full_name|default:log.user.username }}
+                        </div>
+                        <div style="color:#94a3b8;font-size:0.72rem;">
+                            @{{ log.user.username }}
+                        </div>
+                    </td>
+                    <td>
+                        {% if log.user.is_superuser or log.user.is_staff %}
+                            <span style="background:#7c3aed;color:#fff;padding:3px 8px;border-radius:20px;font-size:0.72rem;font-weight:600;">
+                                Super Admin
+                            </span>
+                        {% else %}
+                            <span style="background:#0891b2;color:#fff;padding:3px 8px;border-radius:20px;font-size:0.72rem;font-weight:600;">
+                                Campus Admin
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size:0.875rem;">{{ log.action }}</td>
+                    <td style="font-size:0.78rem;color:#64748b;">
+                        {{ log.created_at|date:"d M Y, g:i A" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2rem;">🕐</div>
+                        <p class="mt-2 mb-0">No activity recorded yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 d-flex justify-content-between align-items-center border-top">
+        <div style="color:#64748b;font-size:0.85rem;">
+            Showing {{ page_obj.start_index }}–{{ page_obj.end_index }}
+            of {{ page_obj.paginator.count }} activities
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">«</a>
+                    </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">»</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

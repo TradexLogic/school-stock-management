@@ -1,0 +1,94 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="table-card">
+    <div class="table-card-header">
+        <h5>🏫 All Campuses</h5>
+        <a href="{% url 'campus_create' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i> Add Campus
+        </a>
+    </div>
+
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Campus Name</th>
+                    <th>Address</th>
+                    <th>Admin</th>
+                    <th>Products</th>
+                    <th>Stock Value</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campus in campuses %}
+                <tr>
+                    <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{% url 'campus_detail' campus.pk %}"
+                            style="font-weight:600;color:#0f172a;text-decoration:none;">
+                            {{ campus.name }}
+                        </a>
+                    </td>
+                    <td style="color:#64748b;font-size:0.85rem;">
+                        {{ campus.address|default:"—"|truncatechars:30 }}
+                    </td>
+                    <td>
+                        {% if campus.admin %}
+                            <span style="background:#eff6ff;color:#1d4ed8;padding:3px 8px;border-radius:20px;font-size:0.75rem;">
+                                {{ campus.admin.username }}
+                            </span>
+                        {% else %}
+                            <span style="color:#94a3b8;font-size:0.85rem;">Not assigned</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ campus.total_products }}</strong>
+                    </td>
+                    <td style="color:#16a34a;font-weight:500;">
+                        ৳{{ campus.total_stock_value|floatformat:0 }}
+                    </td>
+                    <td>
+                        {% if campus.is_active %}
+                            <span style="background:#dcfce7;color:#16a34a;padding:3px 8px;border-radius:20px;font-size:0.75rem;font-weight:600;">
+                                ✅ Active
+                            </span>
+                        {% else %}
+                            <span style="background:#fee2e2;color:#dc2626;padding:3px 8px;border-radius:20px;font-size:0.75rem;font-weight:600;">
+                                ❌ Inactive
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'campus_detail' campus.pk %}"
+                                class="btn btn-sm btn-light" title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{% url 'campus_edit' campus.pk %}"
+                                class="btn btn-sm btn-outline-primary" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2.5rem;">🏫</div>
+                        <p class="mt-2 mb-1">No campuses found.</p>
+                        <a href="{% url 'campus_create' %}"
+                            class="btn btn-sm btn-primary mt-1">Add First Campus</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

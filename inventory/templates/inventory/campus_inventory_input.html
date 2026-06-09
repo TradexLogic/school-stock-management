@@ -1,0 +1,124 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<!-- Header -->
+<div style="background:linear-gradient(135deg,#16a34a,#22c55e);border-radius:12px;padding:20px;margin-bottom:24px;color:#fff;">
+    <h5 class="fw-bold mb-1">📥 Stock IN — {{ campus.name }}</h5>
+    <p class="mb-0" style="opacity:0.8;font-size:0.875rem;">
+        আপনার campus এ product quantity update করুন।
+    </p>
+</div>
+
+<div class="row g-3">
+
+    <!-- Input Form -->
+    <div class="col-md-4">
+        <div class="form-card">
+            <h6 class="fw-bold mb-4">📥 Stock IN / Update</h6>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Product *</label>
+                    <select name="product" class="form-select" required>
+                        <option value="">— Select Product —</option>
+                        {% for product in products %}
+                            <option value="{{ product.pk }}">
+                                {{ product.name }} ({{ product.category.name }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">New Quantity *</label>
+                    <input type="number" name="quantity" class="form-control"
+                        min="0" placeholder="Enter quantity..." required>
+                    <div class="text-muted small mt-1">
+                        নতুন quantity দিন — পুরনো quantity replace হবে।
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-check-lg me-1"></i> Update Stock
+                </button>
+            </form>
+
+            <!-- Note -->
+            <div class="mt-3 p-3 rounded"
+                style="background:#f0fdf4;border:1px solid #bbf7d0;font-size:0.82rem;color:#166534;">
+                <i class="bi bi-info-circle me-1"></i>
+                <strong>Note:</strong> Buying price দেখা যাবে না।
+                শুধু Selling Price দেখানো হচ্ছে।
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Inventory -->
+    <div class="col-md-8">
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>📦 Current Inventory — {{ campus.name }}</h5>
+                <span style="color:#64748b;font-size:0.85rem;">
+                    {{ inventories|length }} products
+                </span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price ৳</th>
+                            <th>Quantity</th>
+                            <th>Total Value</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inv in inventories %}
+                        <tr>
+                            <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                            <td><strong>{{ inv.product.name }}</strong></td>
+                            <td>
+                                <span style="background:#f1f5f9;padding:3px 8px;border-radius:20px;font-size:0.75rem;">
+                                    {{ inv.product.category.name }}
+                                </span>
+                            </td>
+                            <td>৳{{ inv.product.selling_price }}</td>
+                            <td><strong>{{ inv.quantity }}</strong></td>
+                            <td style="color:#16a34a;font-weight:500;">
+                                ৳{{ inv.total_value|floatformat:2 }}
+                            </td>
+                            <td>
+                                {% if inv.quantity == 0 %}
+                                    <span class="badge-out-stock">Out of Stock</span>
+                                {% elif inv.quantity <= inv.product.low_stock_threshold %}
+                                    <span class="badge-low">Low Stock</span>
+                                {% else %}
+                                    <span style="color:#16a34a;font-size:0.75rem;font-weight:600;">✅ OK</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5" style="color:#94a3b8;">
+                                <div style="font-size:2rem;">📦</div>
+                                <p class="mt-2 mb-0">
+                                    এখনো কোনো inventory নেই।
+                                    বাম দিকের form থেকে add করুন।
+                                </p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

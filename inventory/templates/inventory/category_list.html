@@ -1,0 +1,119 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="table-card">
+    <div class="table-card-header">
+        <h5>🏷️ All Categories</h5>
+        <a href="{% url 'category_create' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i> Add Category
+        </a>
+    </div>
+
+    <!-- Search -->
+    <div class="p-3 border-bottom">
+        <form method="get" class="d-flex gap-2">
+            <input type="text" name="q" value="{{ query }}"
+                class="form-control form-control-sm"
+                placeholder="🔍 Search categories...">
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+            <a href="{% url 'category_list' %}" class="btn btn-outline-secondary btn-sm">Reset</a>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                    <th>Products</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in page_obj %}
+                <tr>
+                    <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                    <td><strong>{{ cat.name }}</strong></td>
+                    <td style="color:#64748b;font-size:0.85rem;">
+                        {{ cat.description|default:"—"|truncatechars:50 }}
+                    </td>
+                    <td>
+                        <span class="badge bg-primary rounded-pill">
+                            {{ cat.product_count_ann }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b;font-size:0.8rem;">
+                        {{ cat.created_at|date:"d M Y" }}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'category_edit' cat.pk %}"
+                                class="btn btn-sm btn-outline-primary" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'category_delete' cat.pk %}"
+                                class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2.5rem;">🏷️</div>
+                        <p class="mt-2 mb-1">No categories found.</p>
+                        {% if query %}
+                            <a href="{% url 'category_list' %}"
+                                class="btn btn-sm btn-outline-primary mt-1">Clear Search</a>
+                        {% else %}
+                            <a href="{% url 'category_create' %}"
+                                class="btn btn-sm btn-primary mt-1">Add First Category</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 d-flex justify-content-between align-items-center border-top">
+        <div style="color:#64748b;font-size:0.85rem;">
+            Showing {{ page_obj.start_index }}–{{ page_obj.end_index }}
+            of {{ page_obj.paginator.count }} categories
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?q={{ query }}&page={{ page_obj.previous_page_number }}">«</a>
+                    </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link"
+                            href="?q={{ query }}&page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?q={{ query }}&page={{ page_obj.next_page_number }}">»</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

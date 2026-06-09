@@ -1,0 +1,142 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="row g-3">
+
+    <!-- Product Info Card -->
+    <div class="col-md-4">
+        <div class="form-card">
+            <h5 class="fw-bold mb-1">{{ product.name }}</h5>
+            <span style="background:#f1f5f9;padding:3px 10px;border-radius:20px;font-size:0.8rem;">
+                {{ product.category.name }}
+            </span>
+
+            <hr>
+
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Purchase Price</span>
+                <strong>৳{{ product.purchase_price }}</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Selling Price</span>
+                <strong>৳{{ product.selling_price }}</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Profit / Unit</span>
+                <strong style="color:#16a34a;">৳{{ product.profit_margin }}</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Current Stock</span>
+                <strong class="
+                    {% if product.quantity == 0 %}text-danger
+                    {% elif product.is_low_stock %}text-warning
+                    {% else %}text-success{% endif %}">
+                    {{ product.quantity }} units
+                </strong>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Stock Value</span>
+                <strong>৳{{ product.stock_value }}</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Total IN</span>
+                <span class="badge-in">{{ total_in }} units</span>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+                <span class="text-muted">Total OUT</span>
+                <span class="badge-out">{{ total_out }} units</span>
+            </div>
+
+            {% if product.description %}
+            <hr>
+            <div class="text-muted small">{{ product.description }}</div>
+            {% endif %}
+
+            <hr>
+
+            <div class="d-flex gap-2">
+                <a href="{% url 'product_edit' product.pk %}"
+                    class="btn btn-sm btn-primary flex-grow-1">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </a>
+                <a href="{% url 'stock_in' %}" class="btn btn-sm btn-success">
+                    <i class="bi bi-plus"></i> IN
+                </a>
+                <a href="{% url 'stock_out' %}" class="btn btn-sm btn-danger">
+                    <i class="bi bi-dash"></i> OUT
+                </a>
+            </div>
+
+            <div class="mt-2">
+                <a href="{% url 'product_delete' product.pk %}"
+                    class="btn btn-sm btn-outline-danger w-100">
+                    <i class="bi bi-trash me-1"></i> Delete Product
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock History -->
+    <div class="col-md-8">
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>📋 Stock History</h5>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'stock_in' %}" class="btn btn-sm btn-success">
+                        📥 Stock IN
+                    </a>
+                    <a href="{% url 'stock_out' %}" class="btn btn-sm btn-danger">
+                        📤 Stock OUT
+                    </a>
+                </div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Note</th>
+                            <th>By</th>
+                            <th>Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in stock_history %}
+                        <tr>
+                            <td>
+                                {% if log.transaction_type == 'IN' %}
+                                    <span class="badge-in">📥 IN</span>
+                                {% else %}
+                                    <span class="badge-out">📤 OUT</span>
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ log.quantity }}</strong></td>
+                            <td style="font-size:0.8rem;color:#64748b;">
+                                {{ log.note|default:"—"|truncatechars:30 }}
+                            </td>
+                            <td style="font-size:0.8rem;">
+                                {{ log.created_by.username|default:"—" }}
+                            </td>
+                            <td style="font-size:0.78rem;color:#64748b;">
+                                {{ log.created_at|date:"d M Y, g:i A" }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <div style="font-size:2rem;">📋</div>
+                                <p class="mt-2 mb-0">No transactions yet for this product.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

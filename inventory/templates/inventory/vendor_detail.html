@@ -1,0 +1,108 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="row g-3">
+
+    <!-- Vendor Info -->
+    <div class="col-md-4">
+        <div class="form-card">
+            <h5 class="fw-bold mb-1">{{ vendor.name }}</h5>
+            <span style="background:#f1f5f9;padding:3px 10px;border-radius:20px;font-size:0.8rem;">
+                🏪 Vendor
+            </span>
+            <hr>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Mobile</span>
+                <strong>{{ vendor.mobile }}</strong>
+            </div>
+            <div class="py-2 border-bottom">
+                <div class="text-muted mb-1">Address</div>
+                <div>{{ vendor.address|default:"—" }}</div>
+            </div>
+            <div class="py-2 border-bottom">
+                <div class="text-muted mb-1">Bank Account</div>
+                <div style="font-size:0.85rem;">{{ vendor.bank_account|default:"—" }}</div>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Total Purchased</span>
+                <strong>{{ total_quantity }} units</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+                <span class="text-muted">Total Amount</span>
+                <strong style="color:#16a34a;">৳{{ total_amount|floatformat:2 }}</strong>
+            </div>
+            <hr>
+            <div class="d-flex gap-2">
+                <a href="{% url 'vendor_edit' vendor.pk %}"
+                    class="btn btn-sm btn-primary flex-grow-1">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </a>
+                <a href="{% url 'vendor_delete' vendor.pk %}"
+                    class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase History -->
+    <div class="col-md-8">
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>📋 Purchase History</h5>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Voucher</th>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in page_obj %}
+                        <tr>
+                            <td>
+                                <span style="font-family:monospace;font-size:0.8rem;color:#3b82f6;">
+                                    {{ log.voucher_number }}
+                                </span>
+                            </td>
+                            <td>
+                                <div style="font-weight:500;">{{ log.product.name }}</div>
+                                <div style="color:#94a3b8;font-size:0.72rem;">{{ log.product.category.name }}</div>
+                            </td>
+                            <td><strong>{{ log.quantity }}</strong></td>
+                            <td style="color:#16a34a;font-weight:500;">
+                                ৳{% widthratio log.quantity 1 log.product.purchase_price %}
+                            </td>
+                            <td style="font-size:0.78rem;color:#64748b;">
+                                {{ log.created_at|date:"d M Y, g:i A" }}
+                            </td>
+                            <td>
+                                <a href="{% url 'voucher_detail' log.pk %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-receipt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <div style="font-size:2rem;">📋</div>
+                                <p class="mt-2 mb-0">No purchases from this vendor yet.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

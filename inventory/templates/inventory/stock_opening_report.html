@@ -1,0 +1,118 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<!-- Summary -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label">Total Products</div>
+            <div class="stat-value mt-1">{{ products|length }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label">Total Opening Stock</div>
+            <div class="stat-value mt-1">{{ total_opening }} units</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label">Categories</div>
+            <div class="stat-value mt-1">{{ categories|length }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-card-header">
+        <h5>📋 Opening Stock Report</h5>
+        <button onclick="window.print()" class="btn btn-sm btn-danger">
+            <i class="bi bi-printer me-1"></i> Print
+        </button>
+    </div>
+
+    <!-- Filter -->
+    <div class="p-3 border-bottom">
+        <form method="get" class="d-flex gap-2">
+            <select name="category" class="form-select form-select-sm" style="max-width:200px;">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.pk }}"
+                        {% if category_filter == cat.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+            <a href="{% url 'stock_opening_report' %}" class="btn btn-outline-secondary btn-sm">Reset</a>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Opening Stock</th>
+                    <th>Current Stock</th>
+                    <th>Difference</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                    <td><strong>{{ product.name }}</strong></td>
+                    <td>
+                        <span style="background:#f1f5f9;padding:3px 8px;border-radius:20px;font-size:0.75rem;">
+                            {{ product.category.name }}
+                        </span>
+                    </td>
+                    <td><strong>{{ product.opening_stock }}</strong></td>
+                    <td>
+                        <strong class="{% if product.quantity == 0 %}text-danger{% elif product.is_low_stock %}text-warning{% else %}text-success{% endif %}">
+                            {{ product.quantity }}
+                        </strong>
+                    </td>
+                    <td>
+                        {% with diff=product.quantity|add:"-"|add:product.opening_stock|stringformat:"s" %}
+                            {% if product.quantity > product.opening_stock %}
+                                <span style="color:#16a34a;font-weight:600;">
+                                    +{{ product.quantity|add:"-0" }}
+                                </span>
+                            {% elif product.quantity < product.opening_stock %}
+                                <span style="color:#dc2626;font-weight:600;">
+                                    -{{ product.opening_stock|add:"-0" }}
+                                </span>
+                            {% else %}
+                                <span style="color:#64748b;">0</span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2rem;">📋</div>
+                        <p class="mt-2 mb-0">No products found.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+@media print {
+    .sidebar, .top-navbar, .btn, .alert, .p-3.border-bottom { display: none !important; }
+    .main-wrapper { margin-left: 0 !important; }
+    .page-content { padding: 0 !important; }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,215 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Total Purchase Value</div>
+            <div class="stat-value text-primary mt-1">
+                ৳{{ total_purchase_value|floatformat:2 }}
+            </div>
+            <div class="text-muted small mt-1">Current stock এর ক্রয়মূল্য</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Total Selling Value</div>
+            <div class="stat-value text-success mt-1">
+                ৳{{ total_selling_value|floatformat:2 }}
+            </div>
+            <div class="text-muted small mt-1">Current stock এর বিক্রয়মূল্য</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Potential Profit</div>
+            <div class="stat-value mt-1"
+                style="color:{% if potential_profit >= 0 %}#16a34a{% else %}#dc2626{% endif %};">
+                ৳{{ potential_profit|floatformat:2 }}
+            </div>
+            <div class="text-muted small mt-1">সম্ভাব্য মুনাফা</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Filtered Transactions</div>
+            <div class="d-flex gap-2 mt-2">
+                <span class="badge-in" style="font-size:0.85rem;">
+                    📥 {{ total_in_qty }} IN
+                </span>
+                <span class="badge-out" style="font-size:0.85rem;">
+                    📤 {{ total_out_qty }} OUT
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Form -->
+<div class="table-card mb-4">
+    <div class="table-card-header">
+        <h5>🔎 Filter Transactions</h5>
+    </div>
+    <div class="p-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold">Product</label>
+                {{ form.product }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Type</label>
+                {{ form.transaction_type }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Date From</label>
+                {{ form.date_from }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Date To</label>
+                {{ form.date_to }}
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm flex-grow-1">
+                    Apply Filter
+                </button>
+                <a href="{% url 'reports' %}" class="btn btn-outline-secondary btn-sm">
+                    Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Category Breakdown + Transaction History -->
+<div class="row g-3">
+
+    <!-- Category Breakdown -->
+    <div class="col-md-4">
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>📊 Category Breakdown</h5>
+            </div>
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Products</th>
+                        <th>Qty</th>
+                        <th>Value ৳</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in category_stats %}
+                    <tr>
+                        <td>
+                            <strong style="font-size:0.875rem;">{{ stat.name }}</strong>
+                        </td>
+                        <td>{{ stat.product_count }}</td>
+                        <td>{{ stat.total_qty }}</td>
+                        <td>{{ stat.total_value|floatformat:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            No data available.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="col-md-8">
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>📋 Transaction History</h5>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th>Qty</th>
+                            <th>By</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in page_obj %}
+                        <tr>
+                            <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                            <td>
+                                <div style="font-weight:500;font-size:0.875rem;">
+                                    {{ log.product.name|truncatechars:25 }}
+                                </div>
+                                <div style="color:#94a3b8;font-size:0.72rem;">
+                                    {{ log.product.category.name }}
+                                </div>
+                            </td>
+                            <td>
+                                {% if log.transaction_type == 'IN' %}
+                                    <span class="badge-in">📥 IN</span>
+                                {% else %}
+                                    <span class="badge-out">📤 OUT</span>
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ log.quantity }}</strong></td>
+                            <td style="font-size:0.8rem;">
+                                {{ log.created_by.username|default:"—" }}
+                            </td>
+                            <td style="font-size:0.78rem;color:#64748b;">
+                                {{ log.created_at|date:"d M Y, g:i A" }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <div style="font-size:2rem;">📋</div>
+                                <p class="mt-2 mb-0">No transactions found.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="p-3 d-flex justify-content-between align-items-center border-top">
+                <div style="color:#64748b;font-size:0.85rem;">
+                    Showing {{ page_obj.start_index }}–{{ page_obj.end_index }}
+                    of {{ page_obj.paginator.count }}
+                </div>
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">«</a>
+                            </li>
+                        {% endif %}
+                        {% for num in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">»</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

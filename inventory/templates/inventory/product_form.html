@@ -1,0 +1,112 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="form-card">
+            <h4 class="fw-bold mb-4">{{ form_title }}</h4>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>⚠️ Please fix the errors:</strong>
+                        <ul class="mb-0 mt-1">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li><strong>{{ field }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="row g-3">
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Product Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger small mt-1">{{ form.name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Category *</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="text-danger small mt-1">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Vendor *</label>
+                        {{ form.vendor }}
+                        {% if form.vendor.errors %}
+                            <div class="text-danger small mt-1">{{ form.vendor.errors }}</div>
+                        {% endif %}
+                        <div class="text-muted small mt-1">
+                            Vendor না থাকলে আগে
+                            <a href="{% url 'vendor_create' %}" target="_blank">এখানে</a>
+                            তৈরি করুন।
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Purchase Price (৳) *</label>
+                        {{ form.purchase_price }}
+                        {% if form.purchase_price.errors %}
+                            <div class="text-danger small mt-1">{{ form.purchase_price.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Selling Price (৳) *</label>
+                        {{ form.selling_price }}
+                        {% if form.selling_price.errors %}
+                            <div class="text-danger small mt-1">{{ form.selling_price.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Opening Stock</label>
+                        {{ form.opening_stock }}
+                        <div class="text-muted small mt-1">শুরুতে কতটা stock আছে</div>
+                        {% if form.opening_stock.errors %}
+                            <div class="text-danger small mt-1">{{ form.opening_stock.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Low Stock Threshold</label>
+                        {{ form.low_stock_threshold }}
+                        <div class="text-muted small mt-1">এর নিচে গেলে alert দেখাবে</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-lg me-1"></i> Save Product
+                    </button>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

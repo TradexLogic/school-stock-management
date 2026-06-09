@@ -1,0 +1,139 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="table-card">
+    <div class="table-card-header">
+        <h5>🔄 Stock Transactions</h5>
+        <div class="d-flex gap-2">
+            <a href="{% url 'stock_in' %}" class="btn btn-success btn-sm">
+                📥 Stock IN
+            </a>
+            <a href="{% url 'stock_out' %}" class="btn btn-danger btn-sm">
+                📤 Stock OUT
+            </a>
+        </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="p-3 border-bottom">
+        <form method="get" class="d-flex gap-2 flex-wrap">
+            <input type="text" name="q" value="{{ query }}"
+                class="form-control form-control-sm"
+                style="max-width:250px;"
+                placeholder="🔍 Search product, note...">
+            <select name="type" class="form-select form-select-sm" style="max-width:160px;">
+                <option value="">All Types</option>
+                <option value="IN" {% if type_filter == 'IN' %}selected{% endif %}>📥 Stock IN</option>
+                <option value="OUT" {% if type_filter == 'OUT' %}selected{% endif %}>📤 Stock OUT</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+            <a href="{% url 'stock_log_list' %}" class="btn btn-outline-secondary btn-sm">Reset</a>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Note</th>
+                    <th>By</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in page_obj %}
+                <tr>
+                    <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                    <td>
+                        <strong>{{ log.product.name }}</strong>
+                    </td>
+                    <td>
+                        <span style="background:#f1f5f9;padding:3px 8px;border-radius:20px;font-size:0.75rem;">
+                            {{ log.product.category.name }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if log.transaction_type == 'IN' %}
+                            <span class="badge-in">📥 IN</span>
+                        {% else %}
+                            <span class="badge-out">📤 OUT</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ log.quantity }}</strong></td>
+                    <td style="font-size:0.8rem;color:#64748b;">
+                        {{ log.note|default:"—"|truncatechars:30 }}
+                    </td>
+                    <td style="font-size:0.8rem;">
+                        {{ log.created_by.username|default:"System" }}
+                    </td>
+                    <td style="font-size:0.78rem;color:#64748b;">
+                        {{ log.created_at|date:"d M Y, g:i A" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2.5rem;">🔄</div>
+                        <p class="mt-2 mb-1">No transactions found.</p>
+                        {% if query or type_filter %}
+                            <a href="{% url 'stock_log_list' %}"
+                                class="btn btn-sm btn-outline-primary mt-1">Clear Filters</a>
+                        {% else %}
+                            <div class="d-flex gap-2 justify-content-center mt-2">
+                                <a href="{% url 'stock_in' %}" class="btn btn-sm btn-success">
+                                    📥 Stock IN
+                                </a>
+                                <a href="{% url 'stock_out' %}" class="btn btn-sm btn-danger">
+                                    📤 Stock OUT
+                                </a>
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 d-flex justify-content-between align-items-center border-top">
+        <div style="color:#64748b;font-size:0.85rem;">
+            Showing {{ page_obj.start_index }}–{{ page_obj.end_index }}
+            of {{ page_obj.paginator.count }} transactions
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?q={{ query }}&type={{ type_filter }}&page={{ page_obj.previous_page_number }}">«</a>
+                    </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link"
+                            href="?q={{ query }}&type={{ type_filter }}&page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?q={{ query }}&type={{ type_filter }}&page={{ page_obj.next_page_number }}">»</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

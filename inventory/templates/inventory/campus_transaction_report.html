@@ -1,0 +1,179 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<!-- Summary -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div style="font-size:2rem;">📥</div>
+                <div>
+                    <div class="stat-label">Total IN</div>
+                    <div class="stat-value text-success">{{ total_in }} units</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div style="font-size:2rem;">📤</div>
+                <div>
+                    <div class="stat-label">Total OUT</div>
+                    <div class="stat-value text-danger">{{ total_out }} units</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-card-header">
+        <h5>📋 Campus Transaction Report</h5>
+        <button onclick="window.print()" class="btn btn-sm btn-danger">
+            <i class="bi bi-printer me-1"></i> Print
+        </button>
+    </div>
+
+    <!-- Filter -->
+    <div class="p-3 border-bottom">
+        <form method="get" class="row g-2 align-items-end">
+            {% if campuses %}
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold">Campus</label>
+                <select name="campus" class="form-select form-select-sm">
+                    <option value="">All Campuses</option>
+                    {% for c in campuses %}
+                        <option value="{{ c.pk }}"
+                            {% if campus_id == c.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ c.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Type</label>
+                <select name="type" class="form-select form-select-sm">
+                    <option value="">All Types</option>
+                    <option value="IN" {% if type_filter == 'IN' %}selected{% endif %}>📥 IN</option>
+                    <option value="OUT" {% if type_filter == 'OUT' %}selected{% endif %}>📤 OUT</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Date From</label>
+                <input type="date" name="date_from" value="{{ date_from }}"
+                    class="form-control form-control-sm">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Date To</label>
+                <input type="date" name="date_to" value="{{ date_to }}"
+                    class="form-control form-control-sm">
+            </div>
+            <div class="col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filter</button>
+                <a href="{% url 'campus_transaction_report' %}"
+                    class="btn btn-outline-secondary btn-sm">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    {% if campuses %}<th>Campus</th>{% endif %}
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Note</th>
+                    <th>By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in page_obj %}
+                <tr>
+                    <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                    {% if campuses %}
+                    <td>
+                        <span style="background:#eff6ff;color:#1d4ed8;padding:3px 8px;border-radius:20px;font-size:0.75rem;">
+                            {{ log.campus.name }}
+                        </span>
+                    </td>
+                    {% endif %}
+                    <td><strong>{{ log.product.name }}</strong></td>
+                    <td style="font-size:0.8rem;">{{ log.product.category.name }}</td>
+                    <td>
+                        {% if log.transaction_type == 'IN' %}
+                            <span class="badge-in">📥 IN</span>
+                        {% else %}
+                            <span class="badge-out">📤 OUT</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ log.quantity }}</strong></td>
+                    <td style="font-size:0.8rem;color:#64748b;">
+                        {{ log.note|default:"—"|truncatechars:30 }}
+                    </td>
+                    <td style="font-size:0.8rem;">
+                        {{ log.created_by.username|default:"—" }}
+                    </td>
+                    <td style="font-size:0.78rem;color:#64748b;">
+                        {{ log.created_at|date:"d M Y, g:i A" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2rem;">📋</div>
+                        <p class="mt-2 mb-0">No transactions found.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 d-flex justify-content-between align-items-center border-top">
+        <div style="color:#64748b;font-size:0.85rem;">
+            Showing {{ page_obj.start_index }}–{{ page_obj.end_index }}
+            of {{ page_obj.paginator.count }}
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">«</a>
+                    </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">»</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+@media print {
+    .sidebar, .top-navbar, .btn, .alert, .p-3.border-bottom { display: none !important; }
+    .main-wrapper { margin-left: 0 !important; }
+    .page-content { padding: 0 !important; }
+}
+</style>
+
+{% endblock %}

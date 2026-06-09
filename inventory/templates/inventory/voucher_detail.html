@@ -1,0 +1,110 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+
+        <!-- Voucher Card -->
+        <div class="form-card">
+
+            <!-- Header -->
+            <div class="text-center border-bottom pb-4 mb-4">
+                <div style="font-size:2.5rem;">📄</div>
+                <h3 class="fw-bold mt-2 mb-1">
+                    {% if log.transaction_type == 'IN' %}
+                        Stock IN Voucher
+                    {% else %}
+                        Stock OUT Voucher
+                    {% endif %}
+                </h3>
+                <div style="font-family:monospace;font-size:1.1rem;color:#3b82f6;font-weight:600;">
+                    {{ log.voucher_number }}
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
+                        <div class="text-muted small mb-1">Product</div>
+                        <div class="fw-bold">{{ log.product.name }}</div>
+                        <div style="color:#64748b;font-size:0.8rem;">{{ log.product.category.name }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
+                        <div class="text-muted small mb-1">Transaction Type</div>
+                        {% if log.transaction_type == 'IN' %}
+                            <span class="badge-in" style="font-size:0.9rem;">📥 Stock IN</span>
+                        {% else %}
+                            <span class="badge-out" style="font-size:0.9rem;">📤 Stock OUT</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
+                        <div class="text-muted small mb-1">Quantity</div>
+                        <div class="fw-bold" style="font-size:1.3rem;">{{ log.quantity }} units</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
+                        <div class="text-muted small mb-1">Date & Time</div>
+                        <div class="fw-bold">{{ log.created_at|date:"d M Y" }}</div>
+                        <div style="color:#64748b;font-size:0.8rem;">{{ log.created_at|date:"g:i A" }}</div>
+                    </div>
+                </div>
+
+                {% if log.vendor %}
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
+                        <div class="text-muted small mb-1">Vendor</div>
+                        <div class="fw-bold">{{ log.vendor.name }}</div>
+                        <div style="color:#64748b;font-size:0.8rem;">{{ log.vendor.mobile }}</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:8px;padding:16px;">
+                        <div class="text-muted small mb-1">Created By</div>
+                        <div class="fw-bold">{{ log.created_by.username|default:"—" }}</div>
+                    </div>
+                </div>
+
+                {% if log.note %}
+                <div class="col-12">
+                    <div style="background:#fefce8;border-radius:8px;padding:16px;border:1px solid #fef08a;">
+                        <div class="text-muted small mb-1">Note</div>
+                        <div>{{ log.note }}</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 justify-content-between">
+                <div class="d-flex gap-2">
+                    <a href="{% url 'stock_log_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Back
+                    </a>
+                </div>
+                <button onclick="window.print()" class="btn btn-primary">
+                    <i class="bi bi-printer me-1"></i> Print Voucher
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .sidebar, .top-navbar, .btn, .alert { display: none !important; }
+    .main-wrapper { margin-left: 0 !important; }
+    .page-content { padding: 0 !important; }
+    .form-card { border: none !important; box-shadow: none !important; }
+}
+</style>
+
+{% endblock %}

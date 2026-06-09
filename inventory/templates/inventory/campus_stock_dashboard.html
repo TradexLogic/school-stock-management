@@ -1,0 +1,108 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<!-- Search -->
+<div class="table-card mb-4">
+    <div class="table-card-header">
+        <h5>🏫 Campus Stock Dashboard</h5>
+    </div>
+    <div class="p-3 border-bottom">
+        <form method="get" class="d-flex gap-2">
+            <input type="text" name="q" value="{{ search }}"
+                class="form-control form-control-sm"
+                placeholder="🔍 Search product or category...">
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+            <a href="{% url 'campus_stock_dashboard' %}"
+                class="btn btn-outline-secondary btn-sm">Reset</a>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    {% for campus in campuses %}
+                        <th class="text-center">{{ campus.name }}</th>
+                    {% endfor %}
+                    <th class="text-center">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in product_campus_data %}
+                <tr>
+                    <td><strong>{{ item.product.name }}</strong></td>
+                    <td>
+                        <span style="background:#f1f5f9;padding:3px 8px;border-radius:20px;font-size:0.75rem;">
+                            {{ item.product.category.name }}
+                        </span>
+                    </td>
+                    {% for cs in item.campus_stocks %}
+                        <td class="text-center">
+                            {% if cs.quantity == 0 %}
+                                <span style="color:#94a3b8;">—</span>
+                            {% elif cs.quantity <= item.product.low_stock_threshold %}
+                                <span class="badge-low">{{ cs.quantity }}</span>
+                            {% else %}
+                                <span style="color:#16a34a;font-weight:600;">{{ cs.quantity }}</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td class="text-center">
+                        <strong>{{ item.total }}</strong>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="20" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2rem;">📦</div>
+                        <p class="mt-2 mb-0">No products found.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Campus Summary Cards -->
+<div class="row g-3">
+    {% for campus in campuses %}
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div style="font-size:1.5rem;">🏫</div>
+                <a href="{% url 'campus_detail' campus.pk %}"
+                    class="btn btn-sm btn-outline-primary">View</a>
+            </div>
+            <div style="font-size:1rem;font-weight:700;color:#0f172a;">
+                {{ campus.name }}
+            </div>
+            <div class="mt-2 d-flex justify-content-between">
+                <div>
+                    <div class="stat-label">Products</div>
+                    <div style="font-size:1.2rem;font-weight:700;">{{ campus.total_products }}</div>
+                </div>
+                <div>
+                    <div class="stat-label">Stock Value</div>
+                    <div style="font-size:1.2rem;font-weight:700;color:#16a34a;">
+                        ৳{{ campus.total_stock_value|floatformat:0 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="form-card text-center py-4" style="color:#94a3b8;">
+            No campuses found.
+            <a href="{% url 'campus_create' %}">Add one</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

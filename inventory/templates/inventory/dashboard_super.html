@@ -1,0 +1,258 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<!-- Welcome Banner -->
+<div style="background:linear-gradient(135deg,#1e293b,#3b82f6);border-radius:12px;padding:24px;margin-bottom:24px;color:#fff;">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h4 class="fw-bold mb-1">Welcome, {{ request.user.get_full_name|default:request.user.username }}! 👋</h4>
+            <p class="mb-0" style="opacity:0.8;font-size:0.9rem;">Head Office — Super Admin Dashboard</p>
+        </div>
+        <div style="font-size:3rem;">🏫</div>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon" style="background:#eff6ff;">📦</div>
+                <span class="text-muted" style="font-size:0.75rem;">Total</span>
+            </div>
+            <div class="stat-value">{{ total_products }}</div>
+            <div class="stat-label mt-1">Products</div>
+            <a href="{% url 'product_list' %}" class="text-primary text-decoration-none" style="font-size:0.78rem;">View all →</a>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon" style="background:#f0fdf4;">🏫</div>
+                <span class="text-muted" style="font-size:0.75rem;">Total</span>
+            </div>
+            <div class="stat-value">{{ total_campuses }}</div>
+            <div class="stat-label mt-1">Campuses</div>
+            <a href="{% url 'campus_list' %}" class="text-success text-decoration-none" style="font-size:0.78rem;">View all →</a>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon" style="background:#fefce8;">📊</div>
+                <span class="text-muted" style="font-size:0.75rem;">Units</span>
+            </div>
+            <div class="stat-value">{{ total_stock_qty }}</div>
+            <div class="stat-label mt-1">Total Stock</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card {% if low_stock_count > 0 %}border-warning{% endif %}">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="stat-icon" style="background:#fffbeb;">⚠️</div>
+                <span class="text-muted" style="font-size:0.75rem;">Alert</span>
+            </div>
+            <div class="stat-value {% if low_stock_count > 0 %}text-warning{% endif %}">{{ low_stock_count }}</div>
+            <div class="stat-label mt-1">Low Stock</div>
+        </div>
+    </div>
+</div>
+
+<!-- Value Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Purchase Value</div>
+            <div style="font-size:1.3rem;font-weight:700;color:#0f172a;margin-top:4px;">
+                ৳{{ stock_purchase_value|floatformat:2 }}
+            </div>
+            <div class="text-muted small">🔒 Confidential</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Selling Value</div>
+            <div style="font-size:1.3rem;font-weight:700;color:#16a34a;margin-top:4px;">
+                ৳{{ stock_selling_value|floatformat:2 }}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Today IN</div>
+            <div style="font-size:1.3rem;font-weight:700;color:#16a34a;margin-top:4px;">
+                {{ today_in }} units
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Today OUT</div>
+            <div style="font-size:1.3rem;font-weight:700;color:#dc2626;margin-top:4px;">
+                {{ today_out }} units
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Campus Overview + Low Stock -->
+<div class="row g-3 mb-4">
+
+    <!-- Campus Overview -->
+    <div class="col-md-6">
+        <div class="table-card h-100">
+            <div class="table-card-header">
+                <h5>🏫 Campus Overview</h5>
+                <a href="{% url 'campus_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Campus</th>
+                        <th>Products</th>
+                        <th>Stock Value</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for campus in campuses %}
+                    <tr>
+                        <td><strong>{{ campus.name }}</strong></td>
+                        <td>{{ campus.total_products }}</td>
+                        <td style="color:#16a34a;font-weight:500;">
+                            ৳{{ campus.total_stock_value|floatformat:0 }}
+                        </td>
+                        <td>
+                            <a href="{% url 'campus_detail' campus.pk %}"
+                                class="btn btn-sm btn-light">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">
+                            No campuses yet.
+                            <a href="{% url 'campus_create' %}">Add one</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Low Stock -->
+    <div class="col-md-6">
+        <div class="table-card h-100">
+            <div class="table-card-header">
+                <h5>⚠️ Low Stock Alert</h5>
+                <a href="{% url 'product_list' %}?stock=low" class="btn btn-sm btn-outline-warning">View All</a>
+            </div>
+            {% if low_stock_products %}
+                <ul class="list-group list-group-flush">
+                    {% for product in low_stock_products %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                        <div>
+                            <div style="font-weight:500;font-size:0.875rem;">{{ product.name }}</div>
+                            <div style="color:#64748b;font-size:0.75rem;">{{ product.category.name }}</div>
+                        </div>
+                        <div class="text-end">
+                            {% if product.quantity == 0 %}
+                                <span class="badge-out-stock">Out of Stock</span>
+                            {% else %}
+                                <span class="badge-low">{{ product.quantity }} left</span>
+                            {% endif %}
+                            <div>
+                                <a href="{% url 'stock_in' %}" class="btn btn-sm btn-success mt-1"
+                                    style="font-size:0.7rem;padding:2px 8px;">+ Restock</a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="p-4 text-center" style="color:#64748b;">
+                    <div style="font-size:2rem;">✅</div>
+                    <p class="mb-0 mt-2">All products have sufficient stock!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="table-card mb-4">
+    <div class="table-card-header">
+        <h5>🔄 Recent Transactions</h5>
+        <a href="{% url 'stock_log_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Voucher</th>
+                    <th>Product</th>
+                    <th>Type</th>
+                    <th>Qty</th>
+                    <th>Vendor</th>
+                    <th>By</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_transactions %}
+                <tr>
+                    <td>
+                        <a href="{% url 'voucher_detail' log.pk %}"
+                            style="font-family:monospace;font-size:0.8rem;color:#3b82f6;text-decoration:none;">
+                            {{ log.voucher_number }}
+                        </a>
+                    </td>
+                    <td>
+                        <div style="font-weight:500;">{{ log.product.name|truncatechars:20 }}</div>
+                        <div style="color:#94a3b8;font-size:0.72rem;">{{ log.product.category.name }}</div>
+                    </td>
+                    <td>
+                        {% if log.transaction_type == 'IN' %}
+                            <span class="badge-in">📥 IN</span>
+                        {% else %}
+                            <span class="badge-out">📤 OUT</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ log.quantity }}</strong></td>
+                    <td style="font-size:0.8rem;">{{ log.vendor.name|default:"—" }}</td>
+                    <td style="font-size:0.8rem;color:#64748b;">{{ log.created_by.username|default:"—" }}</td>
+                    <td style="font-size:0.75rem;color:#64748b;">{{ log.created_at|date:"d M, g:i A" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">No transactions yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="d-flex gap-2 flex-wrap">
+    <a href="{% url 'product_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Add Product
+    </a>
+    <a href="{% url 'campus_create' %}" class="btn btn-secondary">
+        <i class="bi bi-building me-1"></i> Add Campus
+    </a>
+    <a href="{% url 'stock_in' %}" class="btn btn-success">
+        <i class="bi bi-box-arrow-in-down me-1"></i> Stock IN
+    </a>
+    <a href="{% url 'stock_out' %}" class="btn btn-danger">
+        <i class="bi bi-box-arrow-up me-1"></i> Stock OUT
+    </a>
+    <a href="{% url 'reports' %}" class="btn btn-outline-primary">
+        <i class="bi bi-bar-chart-line me-1"></i> Reports
+    </a>
+</div>
+
+{% endblock %}

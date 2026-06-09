@@ -1,0 +1,162 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<!-- Summary -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div style="font-size:2rem;">📤</div>
+                <div>
+                    <div class="stat-label">Total Stock OUT Quantity</div>
+                    <div class="stat-value text-danger">{{ total_qty }} units</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div style="font-size:2rem;">💵</div>
+                <div>
+                    <div class="stat-label">Total Sales Value</div>
+                    <div class="stat-value text-success">৳{{ total_value|floatformat:2 }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-card-header">
+        <h5>📤 Stock OUT Report</h5>
+        <button onclick="window.print()" class="btn btn-sm btn-danger">
+            <i class="bi bi-printer me-1"></i> Print
+        </button>
+    </div>
+
+    <!-- Filter -->
+    <div class="p-3 border-bottom">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold">Product</label>
+                {{ form.product }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Date From</label>
+                {{ form.date_from }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Date To</label>
+                {{ form.date_to }}
+            </div>
+            <div class="col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filter</button>
+                <a href="{% url 'stock_out_report' %}" class="btn btn-outline-secondary btn-sm">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div style="overflow-x:auto;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Voucher</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Sales Value</th>
+                    <th>Date</th>
+                    <th>By</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in page_obj %}
+                <tr>
+                    <td style="color:#94a3b8;">{{ forloop.counter }}</td>
+                    <td>
+                        <span style="font-family:monospace;font-size:0.8rem;color:#dc2626;">
+                            {{ log.voucher_number }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-weight:500;">{{ log.product.name }}</div>
+                    </td>
+                    <td>
+                        <span style="background:#f1f5f9;padding:3px 8px;border-radius:20px;font-size:0.75rem;">
+                            {{ log.product.category.name }}
+                        </span>
+                    </td>
+                    <td><strong>{{ log.quantity }}</strong></td>
+                    <td style="color:#16a34a;font-weight:500;">
+                        ৳{{ log.product.selling_price }}
+                    </td>
+                    <td style="font-size:0.78rem;color:#64748b;">
+                        {{ log.created_at|date:"d M Y, g:i A" }}
+                    </td>
+                    <td style="font-size:0.8rem;">
+                        {{ log.created_by.username|default:"—" }}
+                    </td>
+                    <td>
+                        <a href="{% url 'voucher_detail' log.pk %}"
+                            class="btn btn-sm btn-outline-danger" title="View Voucher">
+                            <i class="bi bi-receipt"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5" style="color:#94a3b8;">
+                        <div style="font-size:2rem;">📤</div>
+                        <p class="mt-2 mb-0">No Stock OUT records found.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 d-flex justify-content-between align-items-center border-top">
+        <div style="color:#64748b;font-size:0.85rem;">
+            Showing {{ page_obj.start_index }}–{{ page_obj.end_index }}
+            of {{ page_obj.paginator.count }} records
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">«</a>
+                    </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">»</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+@media print {
+    .sidebar, .top-navbar, .btn, .alert, .p-3.border-bottom { display: none !important; }
+    .main-wrapper { margin-left: 0 !important; }
+    .page-content { padding: 0 !important; }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "inventory/base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="form-card text-center py-5">
+            <div style="font-size:4rem;">🏫</div>
+            <h4 class="fw-bold mt-3">No Campus Assigned</h4>
+            <p class="text-muted mt-2">
+                আপনার account এ কোনো Campus assign করা হয়নি।
+                <br>
+                Head Office Admin এর সাথে যোগাযোগ করুন।
+            </p>
+            <div class="mt-4 p-3 rounded"
+                style="background:#fef3c7;border:1px solid #fcd34d;font-size:0.875rem;color:#92400e;">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                <strong>করণীয়:</strong> Super Admin কে বলুন
+                Django Admin Panel থেকে আপনার account কে
+                একটি Campus এ assign করতে।
+            </div>
+            <a href="{% url 'logout' %}" class="btn btn-outline-secondary mt-4">
+                <i class="bi bi-box-arrow-left me-1"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
