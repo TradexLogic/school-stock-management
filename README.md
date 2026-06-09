@@ -193,7 +193,7 @@ school_stock_system/
 |-- school_stock/           # Main Django project
 |   |-- settings.py         # Configuration
 |   |-- urls.py             # Root URL routing
-|   `-- wsgi.py             # WSGI entry point
+|   |-- wsgi.py             # WSGI entry point
 |
 |-- inventory/              # Main application
 |   |-- models.py           # All database models
@@ -201,17 +201,17 @@ school_stock_system/
 |   |-- urls.py             # URL patterns
 |   |-- forms.py            # Form definitions
 |   |-- admin.py            # Admin panel config
-|   `-- templates/          # HTML templates
-|       `-- inventory/
+|   |-- templates/          # HTML templates
+|       |-- inventory/
 |           |-- base.html
 |           |-- dashboard_super.html
 |           |-- dashboard_campus.html
 |           |-- campus_stock_dashboard.html
 |           |-- voucher_detail.html
-|           `-- ... (20+ templates)
+|           |-- ... (20+ templates)
 |
 |-- manage.py
-`-- requirements.txt
+|-- requirements.txt
 
 
 Security Features
