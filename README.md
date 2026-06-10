@@ -2,7 +2,8 @@
 
 <div align="center">
 
-![Login Page](screenshots/login_page.png)
+![Login Page](screenshots/login_page.png)<img width="958" height="437" alt="login page" src="https://github.com/user-attachments/assets/22e427b1-af47-44e3-8f98-c32df3a4c4a9" />
+
 
 **A professional, role-based inventory management system built with Django**
 *Designed specifically for schools and educational institutions*
