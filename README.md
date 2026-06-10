@@ -1,247 +1,304 @@
-# school-stock-management
-A Django-based role-based stock management system for schools
+# 🏫 School Stock Management System
 
-School Stock Management System
-A Professional Django-Based Inventory Solution
-for Educational Institutions
-Django 5.x  |  SQLite  |  Bootstrap 5  |  Python 3.11+
+<div align="center">
 
+![Login Page](screenshots/login_page.png)
 
-Project Overview
-The School Stock Management System is a comprehensive, web-based inventory management platform built with Django. It is specifically designed for schools and educational institutions that manage books, stationery, uniforms, and other inventory items across single or multiple campuses.
+**A professional, role-based inventory management system built with Django**
+*Designed specifically for schools and educational institutions*
 
-This system solves a real-world problem faced by school administrators: managing stock distribution across branches while keeping financial data confidential from branch-level staff.
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![Django](https://img.shields.io/badge/Django-5.x-green.svg)](https://djangoproject.com)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg)](https://getbootstrap.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Why This Project Matters
-•	Schools often manage hundreds of products across multiple branches without a proper tracking system
-•	Manual stock management leads to errors, losses, and inefficiencies
-•	Financial data (buying prices, profit margins) must remain confidential from branch admins
-•	Head offices need real-time visibility into every campus's inventory
-•	Guardian and student transactions need to be properly recorded and traceable
-•	Vendors and purchase history must be systematically maintained
+</div>
 
-Key Features
-Role-Based Access Control
-•	Super Admin (Head Office) has complete system control
-•	Campus Admin manages only their assigned campus inventory
-•	Buying prices are fully hidden from Campus Admins
-•	Selling prices are visible to Campus Admins for sales operations
-•	Product and category creation is restricted to Super Admin only
+---
 
-Multi-Campus Support
-•	Separate dashboard for each campus with real-time data
-•	Campus-wise stock overview in a single searchable table
-•	Product search across all campuses simultaneously
-•	Campus transaction history with date filtering
-•	Campus-specific Stock IN and Stock OUT operations
+## 📌 Overview
 
-Inventory Management
-•	Full product lifecycle management with categories
-•	Opening stock tracking for accurate reporting
-•	Automatic low stock alerts with configurable threshold
-•	Real-time stock quantity updates on every transaction
-•	Product-wise transaction history
+The **School Stock Management System** is a comprehensive web-based inventory platform that helps schools manage books, stationery, and other items across **multiple campuses** — with **role-based access control**, **vendor tracking**, **voucher generation**, and **detailed reporting**.
 
-Voucher System
-•	Auto-generated unique voucher numbers for every transaction
-•	Printable vouchers for Stock IN and Stock OUT operations
-•	Voucher lookup and history for audit purposes
-•	Format: SIN-XXXX-XXXXXX (IN) and SOUT-XXXX-XXXXXX (OUT)
+---
 
-Vendor Management
-•	Complete vendor profiles with mobile number and address
-•	Bank account details storage for payment tracking
-•	Vendor-wise purchase history and total transaction amounts
-•	Vendor selection is mandatory for all Stock IN operations
+## 📸 Screenshots
 
-Reports & Analytics
-•	Opening Stock Report with category-wise filtering
-•	Stock IN Report with vendor and date range filtering
-•	Stock OUT Report with product and date filtering
-•	Vendor Purchase Report with detailed transaction history
-•	Campus Transaction Report (filterable by campus, type, and date)
-•	Campus Stock Dashboard showing all campuses in one view
-•	PDF export via browser print and Excel/CSV download
+### 🖥️ Super Admin Dashboard
+![Super Admin Dashboard](screenshots/dashoard_page.png)
 
-Activity Logging
-•	All Super Admin and Campus Admin actions are logged
-•	Timestamped activity trail for security and audit
-•	Role-based activity identification
+### 📊 Dashboard — Recent Transactions & Campus Overview
+![Dashboard Transactions](screenshots/dashboard_page_2.png)
 
+### 📦 Inventory Overview
+![Inventory](screenshots/inventory_page.png)
 
-Technology Stack
+### 🏫 Campus Stock Dashboard
+![Campus Stock](screenshots/campus_stock_page.png)
 
-Technology	Version	Purpose
-Django	5.x	Backend Web Framework
-Python	3.11+	Programming Language
-SQLite	Built-in	Database (no setup required)
-Bootstrap	5.3	Frontend UI Framework
-Bootstrap Icons	1.11	Icon Library
-HTML5 / CSS3	Latest	Templates & Styling
+### 📋 Reports & Analytics
+![Reports](screenshots/report_page.png)
 
+---
 
-User Roles & Permissions
+## ✨ Features
 
-Super Admin (Head Office)
+### 🔐 Role-Based Access Control
+- **Super Admin (Head Office)** — Full system control
+- **Campus Admin** — Campus-specific inventory management only
+- Buying price **completely hidden** from Campus Admins
+- Selling price visible to Campus Admins for sales operations
+- Product & category creation restricted to Super Admin only
 
-Feature	Access Level
-Product Management	Full — Create, Edit, Delete, View
-Category Management	Full — Create, Edit, Delete, View
-Vendor Management	Full — Create, Edit, Delete, View
-Campus Management	Full — Create, Edit, Assign Admins
-Stock IN (Head Office)	Full with Voucher Generation
-Stock OUT (Head Office)	Full with Voucher Generation
-Buying Price	Visible
-Selling Price	Visible
-Profit Margin	Visible
-All Reports	Full Access with Export
-Campus Stock Dashboard	Full View — All Campuses
-Campus Transactions	Full View — All Campuses
-Activity Log	Full Access
-Django Admin Panel	Full Access
+### 🏫 Multi-Campus Support
+- Separate personalized dashboard for each campus
+- Campus-wise stock overview in a single searchable table
+- Search any product across **all campuses simultaneously**
+- Campus transaction history with date filtering
+- Campus-specific Stock IN and Stock OUT operations
 
-Campus Admin
+### 📦 Inventory Management
+- Full product lifecycle — Create, Edit, Delete, View
+- Category-based organization (Books, Khata, Diary, Stationery, etc.)
+- Opening stock tracking for accurate reporting
+- **Automatic low stock alerts** with configurable threshold
+- Real-time stock quantity updates on every transaction
+- Product-wise complete transaction history
 
-Feature	Access Level
-Campus Stock IN	Own Campus Only
-Campus Stock OUT	Own Campus Only
-Campus Inventory View	Own Campus Only
-Transaction Report	Own Campus Only
-Buying Price	Hidden — Not Visible
-Selling Price	Visible for Sales Operations
-Product Creation	Not Allowed
-Category Creation	Not Allowed
-Vendor Management	Not Allowed
-Head Office Stock	Not Allowed
-Other Campus Data	Not Allowed
+### 🎫 Voucher System
+- **Auto-generated unique voucher numbers** for every transaction
+- Format: `SIN-XXXX-XXXXXX` (Stock IN) and `SOUT-XXXX-XXXXXX` (Stock OUT)
+- Printable vouchers for every Stock IN and Stock OUT operation
+- Full voucher history for audit purposes
 
+### 🏪 Vendor Management
+- Complete vendor profiles with mobile number and address
+- Bank account details storage for payment tracking
+- Vendor-wise purchase history and total transaction amounts
+- Vendor selection **mandatory** for all Stock IN operations
 
-Database Models
+### 📊 Reports & Analytics
+- **Opening Stock Report** — Category-wise filtering
+- **Stock IN Report** — Vendor and date range filtering
+- **Stock OUT Report** — Product and date filtering
+- **Vendor Purchase Report** — Complete transaction history per vendor
+- **Campus Transaction Report** — Filter by campus, type, and date
+- **Campus Stock Dashboard** — All campuses in one searchable view
+- **PDF Export** via browser print
+- **Excel/CSV Download** with one click
 
-Model	Description	Key Fields
-Category	Product categories	name, description
-Product	All products with pricing	name, category, purchase_price, selling_price, quantity
-Vendor	Supplier information	name, mobile, address, bank_account
-Campus	School branches	name, address, admin (OneToOne User)
-StockLog	Head office transactions	product, type, quantity, vendor, voucher_number
-CampusInventory	Per-campus stock levels	campus, product, quantity
-CampusStockLog	Campus transaction history	campus, product, type, quantity, note
-ActivityLog	User activity tracking	user, action, created_at
+### 📋 Activity Logging
+- All Super Admin and Campus Admin actions are logged
+- Timestamped activity trail for security and audit
+- Role-based activity identification
 
+### 🖨️ PDF & Excel Export
+- Inventory list downloadable as **CSV (Excel)**
+- Any report page **printable as PDF**
+- Vouchers are **individually printable**
 
-Installation & Setup
-Prerequisites
-•	Python 3.11 or higher installed
-•	pip (Python package manager)
-•	Git
-•	A terminal or command prompt
+---
 
-Step-by-Step Installation
+## 🛠️ Tech Stack
 
-Step 1 — Clone the Repository
-git clone https://github.com/your-username/school-stock.git
-cd school-stock
+| Technology | Version | Purpose |
+|---|---|---|
+| **Django** | 5.x | Backend Web Framework |
+| **Python** | 3.11+ | Programming Language |
+| **SQLite** | Built-in | Database (zero setup) |
+| **Bootstrap** | 5.3 | Frontend UI Framework |
+| **Bootstrap Icons** | 1.11 | Icon Library |
 
-Step 2 — Create Virtual Environment
-On Windows:
+---
+
+## 👥 User Roles & Permissions
+
+### ✅ Super Admin (Head Office)
+
+| Feature | Access |
+|---|---|
+| Product Management | ✅ Full |
+| Category Management | ✅ Full |
+| Vendor Management | ✅ Full |
+| Campus Management | ✅ Full |
+| Stock IN / OUT | ✅ Full with Voucher |
+| Buying Price | ✅ Visible |
+| Selling Price | ✅ Visible |
+| Profit Margin | ✅ Visible |
+| All Reports | ✅ Full with Export |
+| Campus Stock Dashboard | ✅ All Campuses |
+| Campus Transactions | ✅ All Campuses |
+| Activity Log | ✅ Full |
+| Django Admin Panel | ✅ Full |
+
+### ✅ Campus Admin
+
+| Feature | Access |
+|---|---|
+| Campus Stock IN | ✅ Own Campus Only |
+| Campus Stock OUT | ✅ Own Campus Only |
+| Campus Inventory View | ✅ Own Campus Only |
+| Transaction Report | ✅ Own Campus Only |
+| Buying Price | ❌ Hidden |
+| Selling Price | ✅ Visible |
+| Product Creation | ❌ Not Allowed |
+| Category Creation | ❌ Not Allowed |
+| Vendor Management | ❌ Not Allowed |
+| Other Campus Data | ❌ Not Allowed |
+
+---
+
+## 🗄️ Database Models
+
+| Model | Description |
+|---|---|
+| `Category` | Product categories (Books, Khata, etc.) |
+| `Product` | Products with buying & selling prices |
+| `Vendor` | Supplier profiles with bank details |
+| `Campus` | School branches with assigned admins |
+| `StockLog` | Head office stock transactions with vouchers |
+| `CampusInventory` | Per-campus real-time stock levels |
+| `CampusStockLog` | Campus IN/OUT transaction history |
+| `ActivityLog` | Complete user activity audit trail |
+
+---
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+- Python 3.11+
+- pip
+- Git
+
+### Step 1 — Clone the Repository
+
+```bash
+git clone https://github.com/TradexLogic/school-stock-management.git
+cd school-stock-management
+```
+
+### Step 2 — Create Virtual Environment
+
+```bash
+# Windows
 python -m venv venv
 venv\Scripts\activate
 
-On Linux / Mac:
+# Linux / Mac
 python3 -m venv venv
 source venv/bin/activate
+```
 
-Step 3 — Install Dependencies
+### Step 3 — Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-Step 4 — Run Database Migrations
+### Step 4 — Run Database Migrations
+
+```bash
 python manage.py makemigrations
 python manage.py migrate
+```
 
-Step 5 — Create Super Admin Account
+### Step 5 — Create Super Admin Account
+
+```bash
 python manage.py createsuperuser
-Enter your desired username, email, and password when prompted.
+```
 
-Step 6 — Start the Development Server
+### Step 6 — Start Development Server
+
+```bash
 python manage.py runserver
+```
 
-Step 7 — Access the System
+### Step 7 — Open in Browser
+
+```
 http://127.0.0.1:8000/
+```
 
+---
 
-First-Time Setup Guide
-Setting Up as Super Admin
-1.	Login with your superuser credentials at the main URL
-2.	Go to Categories and create product categories (e.g., Books, Khata, Diary, Stationery)
-3.	Go to Vendors and add your suppliers with their details
-4.	Go to Products and add all products with buying and selling prices
-5.	Go to Admin Panel and create User accounts for each Campus Admin
-6.	Go to Campuses and create each campus, assigning the correct User as Campus Admin
-7.	Use Stock IN to receive inventory from vendors with voucher generation
+## ⚙️ First-Time Setup Guide
 
-Campus Admin Operations
-8.	Login with your campus admin credentials
-9.	View your campus dashboard showing current inventory
-10.	Use Stock IN to update product quantities received at your campus
-11.	Use Stock OUT to record products issued to guardians or students
-12.	View Transaction Report to see complete history of your campus operations
+### As Super Admin:
+1. Login with your superuser credentials
+2. Go to **Categories** → Create product categories
+3. Go to **Vendors** → Add your suppliers
+4. Go to **Products** → Add products with pricing
+5. Go to **Admin Panel** → Create Campus Admin user accounts
+6. Go to **Campuses** → Create campuses and assign admin users
+7. Use **Stock IN** to receive inventory from vendors
 
+### As Campus Admin:
+1. Login with your campus admin credentials
+2. View your campus dashboard
+3. Use **Stock IN** to update product quantities
+4. Use **Stock OUT** to record items issued to students/guardians
+5. View **Transaction Report** for complete history
 
-Project Structure
+---
 
-school_stock_system/
-|-- school_stock/           # Main Django project
-|   |-- settings.py         # Configuration
-|   |-- urls.py             # Root URL routing
-|   |-- wsgi.py             # WSGI entry point
-|
-|-- inventory/              # Main application
-|   |-- models.py           # All database models
-|   |-- views.py            # Business logic & views
-|   |-- urls.py             # URL patterns
-|   |-- forms.py            # Form definitions
-|   |-- admin.py            # Admin panel config
-|   |-- templates/          # HTML templates
-|       |-- inventory/
-|           |-- base.html
-|           |-- dashboard_super.html
-|           |-- dashboard_campus.html
-|           |-- campus_stock_dashboard.html
-|           |-- voucher_detail.html
-|           |-- ... (20+ templates)
-|
-|-- manage.py
-|-- requirements.txt
+## 📁 Project Structure
 
+```
+school-stock-management/
+│
+├── school_stock/           # Django project settings
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+│
+├── inventory/              # Main application
+│   ├── models.py           # Database models
+│   ├── views.py            # Business logic
+│   ├── urls.py             # URL routing
+│   ├── forms.py            # Form definitions
+│   ├── admin.py            # Admin configuration
+│   └── templates/
+│       └── inventory/      # 20+ HTML templates
+│
+├── screenshots/            # App screenshots
+├── manage.py
+└── requirements.txt
+```
 
-Security Features
-•	All pages require authentication — no public access
-•	Role-based access control enforced on every view function
-•	Buying price completely hidden from Campus Admin role
-•	CSRF protection on all forms
-•	Activity logging for complete audit trail
-•	Campus Admins can only access their own campus data
-•	Negative stock prevention — Stock OUT validates available quantity
+---
 
+## 🔒 Security Features
 
-Ideal Use Cases
+- All pages require authentication — no public access
+- Role-based access control enforced on every view
+- Buying price completely hidden from Campus Admins
+- CSRF protection on all forms
+- Activity logging for complete audit trail
+- Campus Admins can only access their own campus data
+- Negative stock prevention on all OUT operations
 
-Organization Type	How It Helps
-Multi-branch Schools	Centralized purchasing with branch-level distribution tracking
-Educational Institutions	Complete stationery and book inventory management
-Single Campus Schools	Full inventory with vendor and voucher management
-NGO Education Programs	Transparent distribution tracking with audit logs
+---
 
+## 🎯 Ideal Use Cases
 
-requirements.txt
+| Organization | How It Helps |
+|---|---|
+| Multi-branch Schools | Centralized purchasing with branch-level distribution |
+| Educational Institutions | Complete stationery and book inventory management |
+| Single Campus Schools | Full inventory with vendor and voucher management |
+| NGO Education Programs | Transparent distribution tracking with audit logs |
 
-Django>=5.0
-Pillow>=10.0.0
+---
 
+## 📄 License
 
-License
-This project is open source and available under the MIT License. You are free to use, modify, and distribute it for personal or commercial purposes.
+This project is open source and available under the [MIT License](LICENSE).
 
+---
 
-Built with love for educational institutions
-School Stock Management System — Making inventory simple, organized, and transparent.
+## 👨‍💻 Developer
+
+Built with ❤️ for **Dar-ul-Madinah** and all educational institutions.
+
+*Making school inventory simple, organized, and transparent.*
