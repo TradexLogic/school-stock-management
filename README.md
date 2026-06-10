@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Login Page](screenshots/login_page.png)<img width="958" height="437" alt="login page" src="https://github.com/user-attachments/assets/22e427b1-af47-44e3-8f98-c32df3a4c4a9" />
+![Login Page]<img width="958" height="437" alt="login page" src="https://github.com/user-attachments/assets/22e427b1-af47-44e3-8f98-c32df3a4c4a9" />
 
 
 **A professional, role-based inventory management system built with Django**
@@ -26,19 +26,20 @@ The **School Stock Management System** is a comprehensive web-based inventory pl
 ## 📸 Screenshots
 
 ### 🖥️ Super Admin Dashboard
-![Super Admin Dashboard](screenshots/dashoard_page.png)
+![Super Admin Dashboard]<img width="949" height="437" alt="dashoard page" src="https://github.com/user-attachments/assets/f7d6e579-7c25-4409-9364-38477a472cf8" />
 
 ### 📊 Dashboard — Recent Transactions & Campus Overview
-![Dashboard Transactions](screenshots/dashboard_page_2.png)
+![Dashboard Transactions]<img width="947" height="438" alt="dashboard page 2" src="https://github.com/user-attachments/assets/f8103d05-2976-4973-8531-81e12bca7d4b" />
 
 ### 📦 Inventory Overview
-![Inventory](screenshots/inventory_page.png)
+![Inventory]<img width="958" height="437" alt="inventory page" src="https://github.com/user-attachments/assets/ce01a044-e8f3-46df-8aef-f0ed6d76eccf" />
 
 ### 🏫 Campus Stock Dashboard
-![Campus Stock](screenshots/campus_stock_page.png)
+![Campus Stock]<img width="947" height="435" alt="campus stock page" src="https://github.com/user-attachments/assets/9f258baf-1ad6-4b48-8685-877c7b627117" />
+
 
 ### 📋 Reports & Analytics
-![Reports](screenshots/report_page.png)
+![Reports]<img width="947" height="436" alt="report page" src="https://github.com/user-attachments/assets/ccb98414-ff61-4a1b-9589-fc090abf7195" />
 
 ---
 
